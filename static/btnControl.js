@@ -42,6 +42,7 @@ btnConnect.onclick = async () => {
 btnStart.onclick = async () => {
     const response = await fetch("/api/record/start", { method: 'POST' });
     if (response.ok) {appState.isRecording = true;}
+    startRecording();
     updateUI();
     updateGraph();
 }
@@ -60,7 +61,13 @@ btnPauseResume.onclick = async () => {
 
 btnEnd.onclick = async () => {
     const response = await fetch("/api/record/end", { method: 'POST' });
-    if (response.ok){ appState.isRecording = false; appState.isPaused = false; }
+    if (response.ok){ 
+        appState.isRecording = false; 
+        appState.isPaused = false; 
+        btnStart.innerText = "Restart Recording";
+        liveValue.innerText = "--";
+    }
+    
     updateUI();
     updateGraph();
 }

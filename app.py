@@ -36,13 +36,20 @@ def handle_hr(sender, data):
                 beat = len(server.rr_record) + 1
                 server.total_time += rr_sec
                 rmssd = compute_local_rmssd(server.rr_record)
-                server.rr_queue.put_nowait((beat, rr_sec, server.total_time, rmssd))
+                def safe_put(item):
+                    if not server.rr_queue.full():
+                        server.rr_queue.put_nowait(item)
+
+                server.loop.call_soon_threadsafe(
+                    safe_put,
+                    (beat, rr_sec, server.total_time, rmssd))
 
 
 class DeviceInfo(BaseModel):
     """Model for a discovered BLE device."""
     address: str
     name: str
+
 class ServerState:
     """Manages the application's global state."""
     def __init__(self):
@@ -51,18 +58,23 @@ class ServerState:
         self.is_paused: bool = False
         self.rr_record: List[float] = []
         self.total_time: float = 0
-        self.rr_queue = asyncio.Queue(maxsize=1000)
+        self.rr_queue = None
 
 server = ServerState()
 
 
 app = FastAPI()
+
 # Mount the static HTML file
 app.mount("/static", StaticFiles(directory="static"), name="static")
 @app.get("/", response_class=HTMLResponse)
 async def get_index():
     with open("index.html", "r") as f:
         return f.read()
+@app.on_event("startup")
+async def startup():
+    server.loop = asyncio.get_running_loop()
+    server.rr_queue = asyncio.Queue(maxsize=1000)
 
 server = ServerState()
 @app.get("/api/devices", response_model=List[DeviceInfo])
@@ -89,6 +101,7 @@ async def disconnect_device():
 @app.post("/api/record/start")
 async def start_recording():
     server.rr_record.clear()
+    server.total_time = 0
     server.is_recording = True
     server.is_paused = False
     await server.ble_client.start_notify(HR_CHAR, handle_hr)

@@ -1,7 +1,7 @@
 const CHART_MAX_POINTS = 121
 const CHART_CONTAINER_WIDTH = chartContainer.clientWidth;
 const WIDTH_PER_POINT = CHART_CONTAINER_WIDTH / CHART_MAX_POINTS
-const chartData = {
+let chartData = {
     labels: Array.from({ length: CHART_MAX_POINTS}, (_, i) => i),
     datasets: [{
         label: "RMSSD",
@@ -22,6 +22,7 @@ const chart = new Chart(document.getElementById("rmssd-chart"), {
             y: { title: { display: true, text: 'RMSSD (ms)'}, min:0, max:100} },
         plugins: { legend: { display: false } }
     }});
+
 
 function updateGraph(){
     if (appState.isRecording && !appState.isPaused){

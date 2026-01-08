@@ -28,8 +28,16 @@ function updateUI() {
     btnEnd.disabled = !appState.isRecording;
 }
 
+function startRecording(){
+    rr_record = [{'beat':1, 'rr':-1, 'time':0, 'rmssd': -1}];
+    chartData.datasets[0].data = []
+    chartContainer.style.width = CHART_CONTAINER_WIDTH + 'px';
+    chart.canvas.style.width = CHART_CONTAINER_WIDTH + 'px';
+    chart.resize();
+    chart.update();
+}
 
-let rr_record = [{'beat':1, 'rr':-1, 'time':0, 'rmssd': -1}]
+let rr_record = [{'beat':1, 'rr':-1, 'time':0, 'rmssd': -1}];
 const ws = new WebSocket("ws://localhost:8000/ws");
 ws.onmessage = (e) => {
     const data = JSON.parse(e.data)
@@ -48,4 +56,3 @@ function export_csv(data){
     var encodedUri = encodeURI(csvContent); //Encode
     window.open(encodedUri); //Export
 }
-
