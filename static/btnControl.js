@@ -74,3 +74,28 @@ btnEnd.onclick = async () => {
 
 
 btnExport.onclick = () => {export_csv(rr_record);}
+
+
+btnOpenSetting.onclick = () => {
+    const SettingsPage = document.getElementById("setting")
+    SettingsPage.style.display = "block";
+    SettingsPage.style.visibility = "visible";
+}
+
+
+btnSaveSetting.onclick = () => {
+    appSetting = {
+        displayRMSSD: document.getElementById('setting-display-rmssd').checked,
+        displayRawRRI: document.getElementById('setting-display-raw-rri').checked,
+        displayECG: document.getElementById('setting-display-ecg').checked,
+        minRRIForRMSSD: parseInt(document.getElementById('setting-min-rri-rmssd').value),
+        maxRRIForRMSSD: parseInt(document.getElementById('setting-max-rri-rmssd').value),
+        RRIRemovalCap: parseInt(document.getElementById('setting-rri-artifact-removal-cap').value),
+    };
+}
+
+
+btnCloseSetting.onclick = () => {
+    SettingsPage.style.display = "none";
+    SettingsPage.style.visibility = "hidden";
+}

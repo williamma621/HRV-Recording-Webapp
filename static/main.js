@@ -6,10 +6,16 @@ const btnStart = document.getElementById("btn-start");
 const btnPauseResume = document.getElementById("btn-pause-resume");
 const btnEnd = document.getElementById("btn-end");
 const btnExport = document.getElementById("btn-export")
+const btnOpenSetting = document.getElementById("btn-open-setting")
+const btnSaveSetting = document.getElementById("btn-save-setting")
+const btnCloseSetting = document.getElementById("btn-close-setting")
+
 
 const liveValue = document.getElementById("live-rmssd-value")
 const chartContainer =  document.getElementById("rmssd-chart-container")
 const scrollContainer = document.getElementById("rmssd-scroll-container")
+const SettingsPage = document.getElementById("setting")
+
 
 let appState = {
     isSearched: false,
@@ -18,6 +24,15 @@ let appState = {
     isPaused: false,
     deviceAddress: null,
 };
+let appSetting = {
+    displayRMSSD: true,
+    displayRawRRI: false,
+    displayECG: false,
+    minRRIForRMSSD: 5,
+    maxRRIForRMSSD: 5,
+    RRIRemovalCap: 163,
+}
+
 function updateUI() {
     btnSearch.disabled = appState.isConnected;
     deviceSelect.disabled = appState.isConnected || deviceSelect.options.length <= 1;
@@ -55,4 +70,9 @@ function export_csv(data){
     
     var encodedUri = encodeURI(csvContent); //Encode
     window.open(encodedUri); //Export
+}
+
+function computeRMSSD(data, min_rrs, max_rrs, rr_diff_cap){
+// data: data of R-R Intervals in an array
+    
 }
