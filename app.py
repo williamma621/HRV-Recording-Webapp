@@ -11,15 +11,10 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel # Used for structured data exchange
 import uvicorn
 import asyncio
+import webbrowser
+import threading
+import time
 
-def compute_local_rmssd(rr: List[float]) -> Optional[float]:
-    """Calculates the Root Mean Square of Successive Differences (RMSSD)."""
-    if len(rr) < 5:
-        return -1
-    local_rr = rr[-5:]
-    diffs = np.diff(local_rr)
-    # Square the differences, take the mean, and then the square root
-    return float(np.sqrt(np.mean(diffs ** 2))) * 1000
 
 HR_CHAR = "00002a37-0000-1000-8000-00805f9b34fb"
 def handle_hr(sender, data):
@@ -35,14 +30,13 @@ def handle_hr(sender, data):
                 server.rr_record.append(rr_sec)
                 beat = len(server.rr_record) + 1
                 server.total_time += rr_sec
-                rmssd = compute_local_rmssd(server.rr_record)
                 def safe_put(item):
                     if not server.rr_queue.full():
                         server.rr_queue.put_nowait(item)
 
                 server.loop.call_soon_threadsafe(
                     safe_put,
-                    (beat, rr_sec, server.total_time, rmssd))
+                    (beat, rr_sec, server.total_time))
 
 
 class DeviceInfo(BaseModel):
@@ -59,7 +53,6 @@ class ServerState:
         self.rr_record: List[float] = []
         self.total_time: float = 0
         self.rr_queue = None
-
 server = ServerState()
 
 
@@ -75,6 +68,12 @@ async def get_index():
 async def startup():
     server.loop = asyncio.get_running_loop()
     server.rr_queue = asyncio.Queue(maxsize=1000)
+    def open_browser():
+        time.sleep(1.5)
+        webbrowser.open("http://127.0.0.1:8000")
+    
+    threading.Thread(target=open_browser, daemon=True).start()
+
 
 server = ServerState()
 @app.get("/api/devices", response_model=List[DeviceInfo])
@@ -126,12 +125,12 @@ async def websocket_endpoint(ws: WebSocket):
     await ws.accept()
     try:
         while True:
-            beat, rr, time, rmssd = await server.rr_queue.get()
+            beat, rr, time = await server.rr_queue.get()
             await ws.send_json({
                 'beat': beat,
                 'rr': rr, 
                 'time': time,
-                'rmssd':rmssd
+                # 'rmssd':rmssd
             })
     except WebSocketDisconnect:
         print("Client disconnected")

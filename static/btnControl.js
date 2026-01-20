@@ -87,7 +87,7 @@ btnSaveSetting.onclick = () => {
     appSetting = {
         displayRMSSD: document.getElementById('setting-display-rmssd').checked,
         displayRawRRI: document.getElementById('setting-display-raw-rri').checked,
-        displayECG: document.getElementById('setting-display-ecg').checked,
+        // displayECG: document.getElementById('setting-display-ecg').checked,
         minRRIForRMSSD: parseInt(document.getElementById('setting-min-rri-rmssd').value),
         maxRRIForRMSSD: parseInt(document.getElementById('setting-max-rri-rmssd').value),
         RRIRemovalCap: parseInt(document.getElementById('setting-rri-artifact-removal-cap').value),

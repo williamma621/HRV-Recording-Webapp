@@ -25,11 +25,19 @@
             <button id="btn-end" disabled>End Recording</button>
         </div>
 
-        <h3>Live HRV<span style="font-size: 1ch;">(rmssd)</span> <span id="live-rmssd-value"> -- </span> </h3> 
         
-        <div id="rmssd-scroll-container" class="chart-container"><div id="rmssd-chart-container" class="chart-area-container">
+        <div id="rmssd-scroll-container" class="scroll-container">
+            <h3>Live HRV<span style="font-size: 1ch;">(rmssd)</span> <span id="live-rmssd-value"> -- </span> </h3> 
+            <div id="rmssd-chart-container" class="chart-container">
             <canvas id="rmssd-chart" class="chart"></canvas>
         </div></div>
+
+        <div id="rri-scroll-container" class="scroll-container">
+            <h3>Live RRI<span style="font-size: 1ch;">(rmssd)</span> <span id="live-rri-value"> -- </span> </h3> 
+            <div id="rri-chart-container" class="chart-container">
+            <canvas id="rri-chart" class="chart"></canvas>
+        </div></div>
+
 
         <button id="btn-export"> Export </button>
 
@@ -44,7 +52,7 @@
         <p> Show Graphs of: </p>
             <label> &nbsp; RMSSD </label>   <input id='setting-display-rmssd' type="checkbox" value="rmssd" checked="True"> <br>
             <label> &nbsp; Raw RRI </label>   <input id='setting-display-raw-rri' type="checkbox" value="raw-rri"> <br>
-            <label> &nbsp; ECG/EKG </label>   <input id='setting-display-ecg' type="checkbox" value="ecg"> <br>
+            <!-- <label> &nbsp; ECG/EKG </label>   <input id='setting-display-ecg' type="checkbox" value="ecg"> <br> -->
         <br>
         <p> RRIs used in calculating Sliding Window RMSSD</p>
             <label> &nbsp; Min RRIs used: </label> <input id="setting-min-rri-rmssd" type="number" value="5"> <br>
