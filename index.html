@@ -19,7 +19,7 @@
 
         </div>
         <div class="controls">
-            <h3>Recording Controls</h3>
+            <h3>Recording Controls <button id="btn-open-setting"> ⚙️ </button> </h3> 
             <button id="btn-start" disabled>Start Recording</button>
             <button id="btn-pause-resume" disabled>Pause</button>
             <button id="btn-end" disabled>End Recording</button>
@@ -37,10 +37,31 @@
     </div>
 
 
+
+
+    <div id="setting">
+        <h3> Settings </h3>
+        <p> Show Graphs of: </p>
+            <label> &nbsp; RMSSD </label>   <input id='setting-display-rmssd' type="checkbox" value="rmssd" checked="True"> <br>
+            <label> &nbsp; Raw RRI </label>   <input id='setting-display-raw-rri' type="checkbox" value="raw-rri"> <br>
+            <label> &nbsp; ECG/EKG </label>   <input id='setting-display-ecg' type="checkbox" value="ecg"> <br>
+        <br>
+        <p> RRIs used in calculating Sliding Window RMSSD</p>
+            <label> &nbsp; Min RRIs used: </label> <input id="setting-min-rri-rmssd" type="number" value="5"> <br>
+            <label> &nbsp; Max RRIs used: </label> <input id="setting-max-rri-rmssd" type="number" value="5"> <br>
+            <label> &nbsp; RRI Artifact Removal Cap (ms): </label> <input id="setting-rri-artifact-removal-cap" type="number" value="160"> <br>
+        <br><br>
+        <div>
+            <button id="btn-save-setting"> Save </button>
+            <button id="btn-close-setting"> Close </button>
+        </div>
+    </div>
+    
     <script src="static/main.js"></script>
     <script src="static/view.js"></script>
     <script src="static/chart.js"></script>
     <script src="static/btnControl.js"></script>
+
 
 </body>
 </html>
