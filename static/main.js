@@ -1,17 +1,6 @@
-const btnSearch = document.getElementById("btn-search");
-const deviceSelect = document.getElementById("device-select");
-const btnConnect = document.getElementById("btn-connect");
-const btnDisconnect = document.getElementById("btn-disconnect")
-const btnStart = document.getElementById("btn-start");
-const btnPauseResume = document.getElementById("btn-pause-resume");
-const btnEnd = document.getElementById("btn-end");
-const btnExport = document.getElementById("btn-export");
-const btnOpenSetting = document.getElementById("btn-open-setting");
-const btnSaveSetting = document.getElementById("btn-save-setting");
-const btnCloseSetting = document.getElementById("btn-close-setting");
+const liveRMSSDValue = document.getElementById("live-rmssd-value");
+const liveTime = document.getElementById("live-time");
 
-
-const liveValue = document.getElementById("live-rmssd-value");
 const chartContainer =  document.getElementById("rmssd-chart-container");
 const scrollContainer = document.getElementById("rmssd-scroll-container");
 const SettingsPage = document.getElementById("setting");
@@ -53,55 +42,62 @@ function startRecording(){
 }
 
 
-function export_csv(data){
-    export_data = [['beat', 'rr', 'time', 'rmssd']]
-    for (const i of data){ export_data.push(Object.values(i)); } // Turn List[Dictionary] to List[List]
-
-    let csvContent = "data:text/csv;charset=utf-8,";
-    export_data.forEach(function(rowArray) { //Turn List[List] to CSV
-        let row = rowArray.join(",");
-        csvContent += row + "\r\n"; });
-    
-    var encodedUri = encodeURI(csvContent); //Encode
-    window.open(encodedUri); //Export
-}
-
-function computeRMSSD(data, min_rrs, max_rrs, rr_diff_cap) {
-    // data: array of RR intervals (ms)
-    // returns RMSSD or -1 if insufficient data
-
-    const n = data.length;
-
-    // Not enough RR intervals
-    if (n < min_rrs + 1) {
-        return -1;
-    }
-
-    // Select last (max_rrs) RR intervals to use
-    const usedData = n > max_rrs ? data.slice(n - max_rrs) : data.slice(1);
-
-    let sumSqDiff = 0;
-    let count = 0;
-
-    for (let i = 1; i < usedData.length; i++) {
-        const diff = usedData[i]['rr'] - usedData[i - 1]['rr'];
-        // Delta-based RR rejection
-        // if (Math.abs(diff) > rr_diff_cap) {
-        //     continue;
-        // }
-        sumSqDiff += diff * diff;
-        count++;
-    }
-
-    if (count == 0) { return -1; }
-    return Math.sqrt(sumSqDiff / count) * 1000;
-}
-
-
 
 let rr_record = [{'beat':1, 'rr':-1, 'time':0, 'rmssd': -1}];
 const ws = new WebSocket("ws://localhost:8000/ws");
 ws.onmessage = (e) => {
     const data = JSON.parse(e.data)
-    data['rmssd'] = computeRMSSD(rr_record, appSetting.minRRIForRMSSD, appSetting.maxRRIForRMSSD, appSetting.RRIRemovalCap)
-    rr_record.push(data) };
+    data['rmssd'] = computeRMSSD(
+        rr_record, 
+        appSetting.minRRIForRMSSD, 
+        appSetting.maxRRIForRMSSD, 
+        appSetting.RRIRemovalCap
+    )
+    rr_record.push(data)
+    update();
+};
+
+
+function getRMSSDSeries(records) {
+  return records.map(r => ({ x: r.time, y: r.rmssd }));
+}
+
+
+
+
+
+
+document.getElementById("btn-import").addEventListener("click", () => {
+  document.getElementById("file-input").click();
+});
+
+document.getElementById("file-input").addEventListener("change", handleFile);
+
+
+
+// let draftInterval = {
+//   start: null,
+//   end: null,
+//   color: null,
+//   live: {
+//     start: false,
+//     end: false
+//   }
+// }
+
+
+// function getLiveTime() {
+//   return rr_record.at(-1)['time']
+// }
+
+
+// function startNewInterval() {
+//   const t = getLiveTime();
+
+//   draftInterval = {
+//     start: t,
+//     end: t,
+//     color: 'rgba(224, 255, 99, 0.15)',
+//     live: { start: true, end: true }
+//   };
+// }

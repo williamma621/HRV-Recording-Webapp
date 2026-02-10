@@ -25,7 +25,7 @@
             <button id="btn-end" disabled>End Recording</button>
         </div>
 
-        
+        <h3>Live Time<span style="font-size: 1ch;">(seconds)</span> <span id="live-time"> -- </span> </h3>
         <div id="rmssd-scroll-container" class="scroll-container">
             <h3>Live HRV<span style="font-size: 1ch;">(rmssd)</span> <span id="live-rmssd-value"> -- </span> </h3> 
             <div id="rmssd-chart-container" class="chart-container">
@@ -34,10 +34,13 @@
 
         <div id="rri-scroll-container" class="scroll-container">
             <h3>Live RRI<span style="font-size: 1ch;">(rmssd)</span> <span id="live-rri-value"> -- </span> </h3> 
+            
             <div id="rri-chart-container" class="chart-container">
             <canvas id="rri-chart" class="chart"></canvas>
         </div></div>
 
+        <button id="btn-import"> Import </button>
+        <input type="file" id="file-input" accept=".csv,text/csv" style="display:none"/>
 
         <button id="btn-export"> Export </button>
 
@@ -64,7 +67,8 @@
             <button id="btn-close-setting"> Close </button>
         </div>
     </div>
-    
+
+    <script src="static/helper.js"></script>
     <script src="static/main.js"></script>
     <script src="static/view.js"></script>
     <script src="static/chart.js"></script>

@@ -68,11 +68,11 @@ async def get_index():
 async def startup():
     server.loop = asyncio.get_running_loop()
     server.rr_queue = asyncio.Queue(maxsize=1000)
-    def open_browser():
-        time.sleep(1.5)
-        webbrowser.open("http://127.0.0.1:8000")
+    # def open_browser():
+    #     time.sleep(1.5)
+    #     webbrowser.open("http://127.0.0.1:8000")
     
-    threading.Thread(target=open_browser, daemon=True).start()
+    # threading.Thread(target=open_browser, daemon=True).start()
 
 
 server = ServerState()
@@ -103,6 +103,7 @@ async def start_recording():
     server.total_time = 0
     server.is_recording = True
     server.is_paused = False
+
     await server.ble_client.start_notify(HR_CHAR, handle_hr)
     return {"status": "recording started"}
 

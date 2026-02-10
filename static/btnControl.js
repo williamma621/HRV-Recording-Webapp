@@ -1,3 +1,23 @@
+{ //Button Variables
+const btnSearch = document.getElementById("btn-search");
+const deviceSelect = document.getElementById("device-select");
+const btnConnect = document.getElementById("btn-connect");
+const btnDisconnect = document.getElementById("btn-disconnect")
+const btnStart = document.getElementById("btn-start");
+const btnPauseResume = document.getElementById("btn-pause-resume");
+const btnEnd = document.getElementById("btn-end");
+const btnImport = document.getElementById("btn-import");
+const fileImportInput = document.getElementById("file-input")
+const btnExport = document.getElementById("btn-export");
+const btnOpenSetting = document.getElementById("btn-open-setting");
+const btnSaveSetting = document.getElementById("btn-save-setting");
+const btnCloseSetting = document.getElementById("btn-close-setting");
+
+}
+
+
+
+{//Connection Buttons
 btnSearch.onclick = async () => {
     btnSearch.disabled = true;
     btnSearch.innerText = "Scanning...";
@@ -37,14 +57,16 @@ btnConnect.onclick = async () => {
     else { alert("Failed to connect: " + await response.text()); }
     updateUI()
 }
+}
 
 
+
+{//Recording Buttons
 btnStart.onclick = async () => {
     const response = await fetch("/api/record/start", { method: 'POST' });
     if (response.ok) {appState.isRecording = true;}
     startRecording();
     updateUI();
-    updateGraph();
 }
 
 
@@ -55,7 +77,6 @@ btnPauseResume.onclick = async () => {
     if (result.status == "resumed"){ appState.isPaused = false;}
     btnPauseResume.innerText = appState.isPaused ? 'Resume' : 'Pause';
     updateUI();
-    updateGraph();
 }
 
 
@@ -66,16 +87,14 @@ btnEnd.onclick = async () => {
         appState.isPaused = false; 
         btnStart.innerText = "Restart Recording";
         liveValue.innerText = "--";
-    }
-    
+    }    
     updateUI();
-    updateGraph();
+}
 }
 
 
-btnExport.onclick = () => {export_csv(rr_record);}
 
-
+{//Settings Buttons
 btnOpenSetting.onclick = () => {
     const SettingsPage = document.getElementById("setting")
     SettingsPage.style.display = "block";
@@ -93,9 +112,22 @@ btnSaveSetting.onclick = () => {
         RRIRemovalCap: parseInt(document.getElementById('setting-rri-artifact-removal-cap').value),
     };
 }
+}
 
 
+
+{ //Import Export
 btnCloseSetting.onclick = () => {
     SettingsPage.style.display = "none";
     SettingsPage.style.visibility = "hidden";
+}
+
+
+
+btnExport.onclick = () => {export_csv(rr_record);}
+
+btnImport.addEventListener("click", () => {
+  fileImportInput.click();
+});
+fileImportInput.addEventListener("change", handleFile);
 }
