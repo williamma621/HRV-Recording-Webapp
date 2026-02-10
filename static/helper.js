@@ -130,6 +130,9 @@ const intervalPlugin = {
   }
 };
 
+function getLiveTime() { return rr_record.at(-1)['time'] }
+function getRMSSDSeries(records) { return records.map(r => ({ x: r.time, y: r.rmssd })); }
+
 
 
 function syncRMSSDChart() {
@@ -150,7 +153,7 @@ function syncRMSSDChart() {
 function update(){
   syncRMSSDChart()
   const last = rr_record.at(-1);
-  liveTime.innerText = Math.round(last.time)
-  liveRMSSDValue.innerText = Math.round(last.rmssd);
-
+  liveTime.innerText = getLiveTime().toFixed(1)
+  liveRMSSDValue.innerText = last.rmssd.toFixed(1);
+  updateDraftInterval()
 }

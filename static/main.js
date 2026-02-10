@@ -44,6 +44,9 @@ function startRecording(){
 
 
 let rr_record = [{'beat':1, 'rr':-1, 'time':0, 'rmssd': -1}];
+
+
+//Main Event Loop
 const ws = new WebSocket("ws://localhost:8000/ws");
 ws.onmessage = (e) => {
     const data = JSON.parse(e.data)
@@ -56,48 +59,3 @@ ws.onmessage = (e) => {
     rr_record.push(data)
     update();
 };
-
-
-function getRMSSDSeries(records) {
-  return records.map(r => ({ x: r.time, y: r.rmssd }));
-}
-
-
-
-
-
-
-document.getElementById("btn-import").addEventListener("click", () => {
-  document.getElementById("file-input").click();
-});
-
-document.getElementById("file-input").addEventListener("change", handleFile);
-
-
-
-// let draftInterval = {
-//   start: null,
-//   end: null,
-//   color: null,
-//   live: {
-//     start: false,
-//     end: false
-//   }
-// }
-
-
-// function getLiveTime() {
-//   return rr_record.at(-1)['time']
-// }
-
-
-// function startNewInterval() {
-//   const t = getLiveTime();
-
-//   draftInterval = {
-//     start: t,
-//     end: t,
-//     color: 'rgba(224, 255, 99, 0.15)',
-//     live: { start: true, end: true }
-//   };
-// }

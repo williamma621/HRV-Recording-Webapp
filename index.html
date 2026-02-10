@@ -25,7 +25,36 @@
             <button id="btn-end" disabled>End Recording</button>
         </div>
 
-        <h3>Live Time<span style="font-size: 1ch;">(seconds)</span> <span id="live-time"> -- </span> </h3>
+        <!-- <h3>Live Time<span style="font-size: 1ch;">(seconds)</span> <span id="live-time"> -- </span> </h3> -->
+        <div class="interval-panel">
+        <div class="interval-row">
+            <button id="newIntervalBtn">＋ New Interval</button>
+            <span class="live-time">
+            ⏱ Time: <span id="live-time">0.0</span>
+            </span>
+        </div>
+
+        <div class="interval-editor hidden" id="intervalEditor">
+            <label>
+            Start
+            <input type="number" step="0.1" id="intervalStart">
+            </label>
+
+            <label>
+            End
+            <input type="number" step="0.1" id="intervalEnd">
+            </label>
+
+            <label>
+            Color
+            <input type="color" id="intervalColor">
+            </label>
+
+            <button id="saveIntervalBtn">Save</button>
+            <button id="cancelIntervalBtn">Cancel</button>
+        </div>
+        </div>
+
         <div id="rmssd-scroll-container" class="scroll-container">
             <h3>Live HRV<span style="font-size: 1ch;">(rmssd)</span> <span id="live-rmssd-value"> -- </span> </h3> 
             <div id="rmssd-chart-container" class="chart-container">
@@ -72,6 +101,7 @@
     <script src="static/main.js"></script>
     <script src="static/view.js"></script>
     <script src="static/chart.js"></script>
+    <script src="static/interval.js"></script>
     <script src="static/btnControl.js"></script>
 
 

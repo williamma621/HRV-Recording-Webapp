@@ -1,4 +1,4 @@
-{ //Button Variables
+ //Button Variables
 const btnSearch = document.getElementById("btn-search");
 const deviceSelect = document.getElementById("device-select");
 const btnConnect = document.getElementById("btn-connect");
@@ -13,7 +13,7 @@ const btnOpenSetting = document.getElementById("btn-open-setting");
 const btnSaveSetting = document.getElementById("btn-save-setting");
 const btnCloseSetting = document.getElementById("btn-close-setting");
 
-}
+
 
 
 
@@ -86,7 +86,7 @@ btnEnd.onclick = async () => {
         appState.isRecording = false; 
         appState.isPaused = false; 
         btnStart.innerText = "Restart Recording";
-        liveValue.innerText = "--";
+        liveRMSSDValue.innerText = "--";
     }    
     updateUI();
 }

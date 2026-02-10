@@ -41,3 +41,56 @@ button:disabled { background-color: #ccc; cursor: not-allowed; }
 
 #setting input[type="number"]{ width:50px; }
 #setting div{ text-align: center;}
+
+
+
+.interval-panel {
+  border-top: 1px solid #ddd;
+  padding-top: 8px;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.interval-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.interval-row button {
+  padding: 4px 10px;
+  font-size: 13px;
+}
+
+.live-time {
+  color: #555;
+  font-family: monospace;
+}
+
+.interval-editor {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.interval-editor label {
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+}
+
+.interval-editor input[type="number"] {
+  width: 80px;
+}
+
+.interval-editor input[type="color"] {
+  padding: 0;
+  width: 36px;
+  height: 28px;
+  border: none;
+}
+
+.hidden {
+  display: none;
+}
