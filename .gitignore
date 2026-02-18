@@ -81,6 +81,8 @@ out
 # Nuxt.js build / generate output
 .nuxt
 dist
+dist_electron
+build
 .output
 
 # Gatsby files
@@ -143,3 +145,6 @@ vite.config.ts.timestamp-*
 test.html
 test.ipynb
 test.py
+.vscode
+package-lock.json
+app.spec
