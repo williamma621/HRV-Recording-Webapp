@@ -26,7 +26,7 @@ function App() {
   };
 
   const handleSensorData = (sensorData) => {
-    sensorData.time = heartDataRef.current[heartDataRef.current.length-1].time + sensorData.rri
+    sensorData.time = heartDataRef.current[heartDataRef.current.length-1].time + sensorData.rri / 1000
     sensorData.beat = heartDataRef.current.length
     sensorData.rmssd = computeRMSSD(heartDataRef.current, 5, 5)
     heartDataRef.current.push(sensorData);
