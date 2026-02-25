@@ -26,4 +26,4 @@ This tool is optimized for the **Polar H10** due to its high-fidelity RRI transm
 4. Use the **Export** button to download your session data for further analysis in R, Python, etc..
 
 ---
-*Created by William Ma as part of research on activity-based stress levels at Mind Body Signaling Lab/University of California, Irvine.*
+*Created by William Ma as part of research on activity-based stress levels at Mind Body Signaling Lab/University of California, Irvine. Contact williamma621@gmail.com with any question regarding this app*
