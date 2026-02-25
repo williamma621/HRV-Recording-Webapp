@@ -86,7 +86,7 @@ function App() {
     
     // Convert heart data to CSV
     const dataCsv = Papa.unparse(heartData, {
-      quotes: true, // Quote all fields to handle special characters
+      quotes: false, // Quote all fields to handle special characters
       delimiter: ",", // Explicitly set delimiter
       newline: "\n", // Consistent line endings
       header: true // Include headers
@@ -286,7 +286,7 @@ function App() {
         <hr />
 
 
-        <span onClick={() => toggleCollapse(3)}> {isExpanded[3] ? "▼": "▶"}</span><b> Intervals </b> <br />
+        <span onClick={() => toggleCollapse(3)}> {isExpanded[3] ? "▼": "▶"}</span><b> Annotations </b> <br />
         <div className='control-group' style={{display: isExpanded[3] ? "block": "none"}}>
           <button onClick={addInterval}> Add Interval </button> <br />
 
