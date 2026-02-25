@@ -1,0 +1,114 @@
+:root {
+  --primary: #2563eb;
+  --bg-color: #f8fafc;
+  --card-bg: #ffffff;
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+  --accent: #10b981;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+}
+
+.app-container {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  grid-template-rows: auto 1fr;  /* Header row + content row */
+  min-height: 100vh;
+}
+
+header {
+  grid-column: 1 / -1;
+  grid-row: 1;  /* Explicitly place in first row */
+  background: white;
+  padding: 0.4rem 1.5rem; /* Reduced padding significantly */
+  height: 50px;           /* Fixed height to ensure it stays a 'slice' */
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+header h1 {
+  font-size: 1.1rem;      /* Shrink the text size */
+  margin: 0;              /* Remove default margins that push the header open */
+  font-weight: 600;
+}
+
+header h4{
+  margin: 0;              /* Remove default margins that push the header open */
+  font-weight: 600;
+}
+
+.logo {
+  height: 24px;           /* Shrink logos to fit the thin bar */
+  width: auto;
+}
+
+
+.settings-panel {
+  grid-column: 1;  /* First column */
+  grid-row: 2;     /* Second row */
+  background: white;
+  border-right: 1px solid var(--border);
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+.dashboard {
+  grid-column: 2;  /* Second column */
+  grid-row: 2;     /* Second row */
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+h1, h2, h3 { color: var(--text-main); margin-bottom: 1rem; }
+
+.control-group {
+  margin-bottom: 1rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+input[type="number"] {
+  width: 60px;
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+input[type="text"] {
+  width: 60px;
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+
+button {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: opacity 0.2s;
+  margin: 5px
+}
+
+button:hover { opacity: 0.9; }
+
+.action-bar {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
