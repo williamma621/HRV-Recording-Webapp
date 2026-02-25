@@ -13,6 +13,11 @@ This tool is optimized for the **Polar H10** due to its high-fidelity RRI transm
 * Garmin HRM-Dual
 * Wahoo TICKR
 * Any BLE chest strap supporting the standard `0x180D` Heart Rate service.
+  
+## 🌐 Browser Compatibility
+This Website works the best with **Chrome** (Requires Web Bluetooth Support from Browser), it is also compatible with
+* Edge
+* Opera Android
 
 ## 🛠️ Tech Stack
 * **Framework:** React + Vite (React-SWC)
