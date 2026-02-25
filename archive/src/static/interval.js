@@ -12,7 +12,7 @@ let draftInterval = null;
 const INTERVAL_COLORS = [
   '#eb2d2d', //red
   '#cfe134',  //yellow
-  '#ffffff', //white
+  '#e8ebb5', //white
   '#000000', //black
   '#43a950', //green
 ];

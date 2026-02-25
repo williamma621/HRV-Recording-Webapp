@@ -1,9 +1,6 @@
 let CHART_MAX_POINTS = 600
 const CHART_CONTAINER_WIDTH = chartContainer.clientWidth;
 
-
-
-
 let chartData = {
   datasets: [{
     label: "RMSSD",
