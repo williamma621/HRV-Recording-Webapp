@@ -116,7 +116,7 @@ const GettingStarted = () => {
 
             <p>
               Each data point represents one BLE packet. Because time is calculated by summing the RRI values, the timeline is <strong>discrete</strong>. 
-              While this may result in a minor drift from a standard stopwatch, it ensures that every heartbeat is mapped exactly to its physiological duration, providing the most accurate representation of HRV over time.
+              While this may result in a minor drift from a standard stopwatch, it ensures that every heartbeat is mapped exactly to its physiological timestamp.
             </p>
 
             <h2>Metric Definitions</h2>

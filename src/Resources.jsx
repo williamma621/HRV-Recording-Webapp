@@ -43,7 +43,7 @@ const Resources = () => {
       </div>
 
       <section className="docs-content">
-        <h2>HRV Reference Material</h2>
+        {/* <h2>HRV Reference Material</h2>
         <p>
           If you are new to Heart Rate Variability, we recommend the following 
           standardized resources to better understand your data:
@@ -58,11 +58,10 @@ const Resources = () => {
           <li>
             <strong>Task Force Report (1996):</strong> The original clinical standards for heart rate variability measurements.
           </li>
-        </ul>
+        </ul> */}
 
         <div className="warning" style={{ marginTop: '40px', padding: '15px', border: '1px solid #ff453a', borderRadius: '8px' }}>
-          <strong>Disclaimer:</strong> This tool is for research and educational purposes only. 
-          It is not a medical device and should not be used to diagnose or treat any heart condition.
+          <strong>Disclaimer:</strong> This tool is not a medical device and should not be used to diagnose or treat any heart condition.
         </div>
       </section>
     </div>

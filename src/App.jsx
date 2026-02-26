@@ -136,7 +136,7 @@ function App() {
     setTick(tick => tick+1);
   }
 
-  return (
+  if (confirm("Disclaimer: This tool is not a medical device and should not be used to diagnose or treat any medical condition")) return (
     <div className='app-container'>
         <header>
             <h1>HRV Recording Webapp</h1>
