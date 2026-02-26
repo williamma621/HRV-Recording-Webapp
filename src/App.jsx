@@ -62,6 +62,8 @@ function App() {
         rri: data.map(d => ({ x: d.time, y: d.rri })),
         rmssd: data.map(d => ({ x: d.time, y: d.rmssd }))
       };
+
+      sensorTime.current = heartDataRef.current.export.at(-1).time
       
       setTick(t => t + 1);
     };
