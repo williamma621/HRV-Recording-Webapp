@@ -6,10 +6,18 @@ import SensorConnector from './SensorConnector'
 import LiveChart from './LiveChart'
 import Papa from 'papaparse';
 import "./App.css"
+import { computeRMSSD, exportCSV, parseImportedCSV } from './helper_functions/dataHelpers';
 
 function App() {
-  const heartDataRef = useRef([{'beat':0, 'bpm':NaN, 'rri':NaN, 'time': 0, 'rmssd':NaN}]);
-  const [,setTick] = useState(0);
+  const initHeartDataRef = {'export':[{'beat':0, 'bpm':NaN, 'rri':NaN, 'time': 0, 'rmssd':NaN}],
+      'bpm': [{'x': 0, 'y': 'NaN'}],
+      'rri': [{'x':0, 'y': 'NaN'}],
+      'rmssd':[{'x':0, 'y': 'NaN'}] 
+    }
+
+  const heartDataRef = useRef(initHeartDataRef);
+  const sensorTime = useRef(0)
+  const [,setTick] = useState(0.0);
   const [isRecording, setIsRecording] = useState(false);
   const [settings, setSettings] = useState({'showRRI': false, 'showBPM': false, 'showRMSSD': false, 'min_rrs': 5, 'max_rrs': 5, 'rr_diff_cap': 160})
   const [isExpanded, setIsExpanded] = useState([true, true, true, true])
@@ -26,161 +34,165 @@ function App() {
   };
 
   const handleSensorData = (sensorData) => {
-    sensorData.time = heartDataRef.current[heartDataRef.current.length-1].time + sensorData.rri / 1000
-    sensorData.beat = heartDataRef.current.length
-    sensorData.rmssd = computeRMSSD(heartDataRef.current, 5, 5)
-    heartDataRef.current.push(sensorData);
+    sensorTime.current += sensorData.rri / 1000;
+
+    sensorData.time = sensorTime.current
+    sensorData.beat = heartDataRef.current.export.length
+    sensorData.rmssd = computeRMSSD(heartDataRef.current.export, 5, 5)
+    heartDataRef.current.export.push(sensorData);
+
+    heartDataRef.current.bpm.push({'x': sensorData.time, 'y': sensorData.bpm})
+    heartDataRef.current.rri.push({'x': sensorData.time, 'y': sensorData.rri})
+    heartDataRef.current.rmssd.push({'x': sensorData.time, 'y': sensorData.rmssd})
 
     setTick(tick => tick+1);
   }
 
   const clearSensorData = () => {
     if (confirm("This will clear your recorded data in this session. Are you sure you want to proceed")){
-      heartDataRef.current = [{'beat':0, 'bpm':NaN, 'rri':NaN, 'time': 0, 'rmssd':NaN}];
+      heartDataRef.current = initHeartDataRef;
       setTick(tick => tick+1);
     }
   }
-  const computeRMSSD = (data, min_rrs, max_rrs, rr_diff_cap) => {
-      // data: array of RR intervals (ms)
-      // returns RMSSD or -1 if insufficient data
+  // const computeRMSSD = (data, min_rrs, max_rrs, rr_diff_cap) => {
+  //     // data: array of RR intervals (ms)
+  //     // returns RMSSD or NaN if insufficient data
 
-      const n = data.length;
+  //     const n = data.length;
 
-      // Not enough RR intervals
-      if (n < min_rrs + 1) {
-          return NaN;
-      }
+  //     // Not enough RR intervals
+  //     if (n < min_rrs + 1) {
+  //         return NaN;
+  //     }
 
-      // Select last (max_rrs) RR intervals to use
-      const usedData = n > max_rrs ? data.slice(n - max_rrs) : data.slice(1);
+  //     // Select last (max_rrs) RR intervals to use
+  //     const usedData = n > max_rrs ? data.slice(n - max_rrs) : data.slice(1);
 
-      let sumSqDiff = 0;
-      let count = 0;
+  //     let sumSqDiff = 0;
+  //     let count = 0;
 
-      for (let i = 1; i < usedData.length; i++) {
-          const diff = usedData[i]['rri'] - usedData[i - 1]['rri'];
-          // Delta-based RR rejection
-          if (Math.abs(diff) > rr_diff_cap) {
-              continue;
-          }
-          sumSqDiff += diff * diff;
-          count++;
-      }
+  //     for (let i = 1; i < usedData.length; i++) {
+  //         const diff = usedData[i]['rri'] - usedData[i - 1]['rri'];
+  //         // Delta-based RR rejection
+  //         if (Math.abs(diff) > rr_diff_cap) {
+  //             continue;
+  //         }
+  //         sumSqDiff += diff * diff;
+  //         count++;
+  //     }
 
-      if (count == 0) { return NaN; }
-      return Math.sqrt(sumSqDiff / count);
-  }
+  //     if (count == 0) { return NaN; }
+  //     return Math.sqrt(sumSqDiff / count);
+  // }
 
-  const exportToCSVWithMetadata = (userMetadata) => {
-    const heartData = heartDataRef.current;
+  // const exportToCSVWithMetadata = (userMetadata) => {
+  //   const heartData = heartDataRef.current.export;
     
-    if (heartData.length === 0) {
-      alert('No data to export');
-      return;
-    }
+  //   if (heartData.length === 0) {
+  //     alert('No data to export');
+  //     return;
+  //   }
     
-    // Convert metadata to YAML format
-    const metadataYaml = `#---\n${Object.entries(userMetadata)
-      .map(([key, value]) => `#${key}: ${JSON.stringify(value)}`)
-      .join('\n')}\n#---\n`;
+  //   // Convert metadata to YAML format
+  //   const metadataYaml = `#---\n${Object.entries(userMetadata)
+  //     .map(([key, value]) => `#${key}: ${JSON.stringify(value)}`)
+  //     .join('\n')}\n#---\n`;
     
-    // Convert heart data to CSV
-    const dataCsv = Papa.unparse(heartData, {
-      quotes: false, // Quote all fields to handle special characters
-      delimiter: ",", // Explicitly set delimiter
-      newline: "\n", // Consistent line endings
-      header: true // Include headers
-    });
+  //   // Convert heart data to CSV
+  //   const dataCsv = Papa.unparse(heartData, {
+  //     quotes: false, // Quote all fields to handle special characters
+  //     delimiter: ",", // Explicitly set delimiter
+  //     newline: "\n", // Consistent line endings
+  //     header: true // Include headers
+  //   });
     
-    // Combine metadata and data
-    const fullContent = metadataYaml + dataCsv;
+  //   // Combine metadata and data
+  //   const fullContent = metadataYaml + dataCsv;
     
-    // Create and trigger download
-    const blob = new Blob([fullContent], { type: 'text/csv;charset=utf-8;' });
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `heart_data_${userMetadata.session_id || 'export'}.csv`;
-    link.click();
-    window.URL.revokeObjectURL(url);
-  };
+  //   // Create and trigger download
+  //   const blob = new Blob([fullContent], { type: 'text/csv;charset=utf-8;' });
+  //   const url = window.URL.createObjectURL(blob);
+  //   const link = document.createElement('a');
+  //   link.href = url;
+  //   link.download = `heart_data_${userMetadata.session_id || 'export'}.csv`;
+  //   link.click();
+  //   window.URL.revokeObjectURL(url);
+  // };
 
-  const importFromCSVWithMetadata = (file) => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
+  // const importFromCSVWithMetadata = (file) => {
+  // return new Promise((resolve, reject) => {
+  //   const reader = new FileReader();
     
-    reader.onload = (e) => {
-      const content = e.target.result;
-      const lines = content.split('\n');
+  //   reader.onload = (e) => {
+  //     const content = e.target.result;
+  //     const lines = content.split('\n');
       
-      // Parse YAML metadata header
-      let metadata = {};
-      let dataStartLine = 0;
+  //     // Parse YAML metadata header
+  //     let metadata = {};
+  //     let dataStartLine = 0;
       
-      if (lines[0].startsWith('#---')) {
-        let i = 1;
-        while (i < lines.length && !lines[i].startsWith('#---')) {
-          const line = lines[i];
-          if (line.startsWith('#')) {
-            const colonIndex = line.indexOf(':');
-            if (colonIndex > -1) {
-              const key = line.substring(1, colonIndex).trim();
-              const value = line.substring(colonIndex + 1).trim();
-              metadata[key] = value;
-            }
-          }
-          i++;
-        }
-        dataStartLine = i + 1; // Skip the closing #---
-      }
+  //     if (lines[0].startsWith('#---')) {
+  //       let i = 1;
+  //       while (i < lines.length && !lines[i].startsWith('#---')) {
+  //         const line = lines[i];
+  //         if (line.startsWith('#')) {
+  //           const colonIndex = line.indexOf(':');
+  //           if (colonIndex > -1) {
+  //             const key = line.substring(1, colonIndex).trim();
+  //             const value = line.substring(colonIndex + 1).trim();
+  //             metadata[key] = value;
+  //           }
+  //         }
+  //         i++;
+  //       }
+  //       dataStartLine = i + 1; // Skip the closing #---
+  //     }
       
-      // Parse the CSV data portion
-      const csvContent = lines.slice(dataStartLine).join('\n');
-      const parseResult = Papa.parse(csvContent, {
-        header: true,
-        dynamicTyping: true, // Automatically convert numbers
-        skipEmptyLines: true
-      });
+  //     // Parse the CSV data portion
+  //     const csvContent = lines.slice(dataStartLine).join('\n');
+  //     const parseResult = Papa.parse(csvContent, {
+  //       header: true,
+  //       dynamicTyping: true, // Automatically convert numbers
+  //       skipEmptyLines: true
+  //     });
       
-      if (parseResult.errors.length > 0) {
-        reject(parseResult.errors);
-      } else {
-        resolve({
-          metadata: metadata,
-          data: parseResult.data
-        });
-      }
-    };
+  //     if (parseResult.errors.length > 0) {
+  //       reject(parseResult.errors);
+  //     } else {
+  //       resolve({
+  //         metadata: metadata,
+  //         data: parseResult.data
+  //       });
+  //     }
+  //   };
     
-    reader.onerror = (error) => reject(error);
-    reader.readAsText(file);
-    });
-  };
+  //   reader.onerror = (error) => reject(error);
+  //   reader.readAsText(file);
+  //   });
+  // };
 
   const handleFileUpload = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
-    
-    try {
-      const result = await importFromCSVWithMetadata(file);
-      console.log('Metadata:', result.metadata);
-      console.log('Data:', result.data);
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const { metadata, data } = parseImportedCSV(e.target.result);
       
-      // If you want to append to your existing ref
-      for (const key in result.metadata){
-        const value = JSON.parse(result.metadata[key])
-        intervalPlugin.current.intervals[key] = value;
-      }
-      console.log(intervalPlugin.current.intervals)
-      heartDataRef.current = []
-      result.data.forEach(item => {
-        heartDataRef.current.push(item);
-      });
-      setTick(tick => tick + 1);
+      // Update Annotations
+      intervalPlugin.current.intervals = metadata;
       
-    } catch (error) {
-      console.error('Import failed:', error);
-    }
+      // Update Heart Data Ref
+      heartDataRef.current = {
+        export: data,
+        bpm: data.map(d => ({ x: d.time, y: d.bpm })),
+        rri: data.map(d => ({ x: d.time, y: d.rri })),
+        rmssd: data.map(d => ({ x: d.time, y: d.rmssd }))
+      };
+      
+      setTick(t => t + 1);
+    };
+    reader.readAsText(file);
   };
 
   const toggleCollapse = (index) => {
@@ -237,7 +249,7 @@ function App() {
 
   return (
     <div className='app-container'>
-    <header>
+      <header>
         <div className="logos">
           <img src={viteLogo} className="logo" />
           <img src={reactLogo} className="logo" />
@@ -281,7 +293,7 @@ function App() {
           {/* The actual input is hidden with CSS */}
           <input type="file" ref={fileInputRef} style={{ display: 'none' }} accept=".csv" onChange={handleFileUpload} />
           
-          <button onClick={() => exportToCSVWithMetadata(intervalPlugin.current.intervals)}>Export Recording</button>
+          <button onClick={() => exportCSV(heartDataRef.current.export, intervalPlugin.current.intervals)}>Export Recording</button>
         </div>
         <hr />
 
@@ -320,9 +332,9 @@ function App() {
 
       <main className='dashboard'>
         <SensorConnector isRecording={isRecording} passData={handleSensorData}></SensorConnector>
-        <LiveChart field='rri' heartDataRef={heartDataRef} show={settings.showRRI} intervalPlugin={intervalPlugin.current}></LiveChart>
-        <LiveChart field='bpm' heartDataRef={heartDataRef} show={settings.showBPM} intervalPlugin={intervalPlugin.current}></LiveChart>
-        <LiveChart field='rmssd' heartDataRef={heartDataRef} show={settings.showRMSSD} intervalPlugin={intervalPlugin.current}></LiveChart>
+        <LiveChart field='rri' Data={heartDataRef.current.rri} show={settings.showRRI} intervalPlugin={intervalPlugin.current}></LiveChart>
+        <LiveChart field='bpm' Data={heartDataRef.current.bpm} show={settings.showBPM} intervalPlugin={intervalPlugin.current}></LiveChart>
+        <LiveChart field='rmssd' Data={heartDataRef.current.rmssd} show={settings.showRMSSD} intervalPlugin={intervalPlugin.current}></LiveChart>
       </main>
     </div>
   )

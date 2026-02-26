@@ -24,7 +24,7 @@
 
 .chart-controls {
   display: flex;
-  gap: 15px;
+  gap: 1em;
   font-size: 0.85rem;
   margin-bottom: 10px;
   color: var(--text-muted);
