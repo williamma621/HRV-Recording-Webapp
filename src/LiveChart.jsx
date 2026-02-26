@@ -22,7 +22,7 @@ const LiveChart = ({ Data, field, show, intervalPlugin }) => {
   const [range, setRange] = useState({'x1':0, 'x2':300, 'y1':fieldData['yRange'][field][0], 'y2':fieldData['yRange'][field][1]})
   const chartOptions = {
     scales: {
-      x: { type: 'linear', title: { display: true, text: 'Time(Seconds)' }, min:range.x1, max:range.x2, ticks: {callback: function(value) { return value; }}},
+      x: { type: 'linear', title: { display: true, text: 'Time(Seconds)' }, min:range.x1, max:range.x2, ticks: {stepSize: 10, callback: function(value) { return value; }}},
       y: { type: 'linear', title: { display: true, text: fieldData['units'][field]}, min: range.y1, max: range.y2, ticks: {callback: function(value) { return value; }}}
     },
     borderColor: fieldData['color'][field],

@@ -4,7 +4,7 @@ import Papa from 'papaparse';
  * Computes RMSSD (Root Mean Square of Successive Differences)
  * formula: sqrt( (1/n) * sum( (RR_i - RR_{i-1})^2 ) )
  */
-export const computeRMSSD = (data, { min_rrs, max_rrs, rr_diff_cap }) => {
+export const computeRMSSD = (data,  min_rrs, max_rrs, rr_diff_cap ) => {
   const n = data.length;
   if (n < parseInt(min_rrs) + 1) return NaN;
 
@@ -17,15 +17,14 @@ export const computeRMSSD = (data, { min_rrs, max_rrs, rr_diff_cap }) => {
 
   for (let i = 1; i < usedData.length; i++) {
     const diff = usedData[i].rri - usedData[i - 1].rri;
-    
     // Artifact rejection: skip if the jump between beats is too high
-    if (Math.abs(diff) > parseInt(rr_diff_cap)) continue;
+    if (Math.abs(diff) > parseInt(rr_diff_cap)){console.log("skipped"); continue;}
 
     sumSqDiff += diff * diff;
     count++;
   }
 
-  return count === 0 ? NaN : Math.sqrt(sumSqDiff / count);
+  return count < min_rrs ? NaN : Math.sqrt(sumSqDiff / count);
 };
 
 /**

@@ -1,0 +1,76 @@
+/* Keep your existing header styles */
+header {
+  grid-row: 1;
+  background: white;
+  padding: 0.4rem 1.5rem;
+  height: 50px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+/* Style the title */
+header h1 {
+  font-size: 1.2rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: black;
+  margin-right: auto; /* Pushes nav to the right */
+}
+
+/* Navigation container */
+header nav {
+  display: flex;
+  gap: 0.5rem;
+  height: 100%;
+  align-items: center;
+}
+
+/* Base button styles */
+header nav button {
+  background: transparent;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: #666; /* Light gray for inactive */
+  cursor: pointer;
+  position: relative;
+  height: 100%;
+  transition: color 0.2s ease;
+  letter-spacing: 0.02em;
+}
+
+/* Hover state */
+header nav button:hover {
+  color: black;
+}
+
+/* Selected state with underline */
+header nav button.active {
+  color: black;
+  font-weight: 500;
+}
+
+header nav button.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; /* Aligns with header border */
+  left: 1rem;
+  right: 1rem;
+  height: 2px;
+  background: black;
+}
+
+/* Focus state for accessibility */
+header nav button:focus {
+  outline: none;
+  color: black;
+}
+
+header nav button:focus-visible {
+  outline: 2px solid black;
+  outline-offset: 2px;
+}
