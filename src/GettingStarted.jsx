@@ -39,7 +39,7 @@ const GettingStarted = () => {
                 </tr>
                 <tr>
                   <td>Compatible Hardware</td>
-                  <td>Polar H10/H9, Garmin HRM-Dual, Wahoo TICKR, Anything with Standard 0x180D BLE</td>
+                  <td>Polar H10/H9, Garmin HRM-Dual, Wahoo TICKR, Any Device with Standard 0x180D BLE</td>
                 </tr>
                 <tr>
                   <td>Browser</td>
