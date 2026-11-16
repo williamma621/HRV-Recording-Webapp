@@ -1,5 +1,4 @@
-import { useState } from 'react'
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import SensorConnector from './SensorConnector'
 import LiveChart from './LiveChart'
 import "./App.css"
@@ -7,6 +6,8 @@ import "./header.css"
 import { computeRMSSD, exportCSV, parseImportedCSV } from './helper_functions/dataHelpers';
 import GettingStarted from './GettingStarted'
 import Resources from './Resources'
+
+const DISCLAIMER_SESSION_KEY = 'hrv-disclaimer-shown'
 
 function App() {
   const initHeartDataRef = {'export':[{'beat':0, 'bpm':NaN, 'rri':NaN, 'time': 0, 'rmssd':NaN}],
@@ -28,6 +29,14 @@ function App() {
   const [name, setName] = useState("interval1"); // Default color
   const [selectedValue, setSelectedValue] = useState("");
   const [currentPage, setCurrentPage] = useState('recorder');
+
+  useEffect(() => {
+    if (window.sessionStorage.getItem(DISCLAIMER_SESSION_KEY) === 'true') return;
+
+    // Store this before showing the dialog so React Strict Mode cannot show it twice.
+    window.sessionStorage.setItem(DISCLAIMER_SESSION_KEY, 'true');
+    window.alert("Disclaimer: This tool is not a medical device and should not be used to diagnose or treat any medical condition");
+  }, []);
 
 
   const handleSensorData = (sensorData) => {
@@ -136,7 +145,7 @@ function App() {
     setTick(tick => tick+1);
   }
 
-  if (confirm("Disclaimer: This tool is not a medical device and should not be used to diagnose or treat any medical condition")) return (
+  return (
     <div className='app-container'>
         <header>
             <h1>HRV Recording Webapp</h1>

@@ -43,6 +43,42 @@ const Resources = () => {
       </div>
 
       <section className="docs-content">
+        <h2>About the HRV Recording Tool</h2>
+
+        <p>
+          The HRV Recording Tool is a free, open-source web application for
+          recording heart rate variability data in research and laboratory settings.
+          It runs directly in a compatible web browser, so no software installation
+          or account is required.
+        </p>
+
+        <p>
+          Researchers can connect a compatible Bluetooth heart rate sensor, view
+          RR intervals, heart rate, and RMSSD in real time, annotate experimental
+          intervals, and export detailed recording data as a CSV file for further
+          analysis in R, Python, Excel, Kubios, or other research software.
+        </p>
+
+        <h2>Key Features</h2>
+
+        <ul className="step-list">
+          <li>Free to use with no account or software download required</li>
+          <li>Real-time RR interval, heart rate, and RMSSD visualization</li>
+          <li>Adjustable sliding-window RMSSD calculation</li>
+          <li>Configurable RR interval artifact rejection</li>
+          <li>Experimental interval annotations</li>
+          <li>Detailed CSV data export</li>
+          <li>Heart rate data remains locally on the user’s computer</li>
+        </ul>
+
+        <h2>Intended Use</h2>
+
+        <p>
+          This tool was developed for research and educational data collection. It
+          is intended to support transparent HRV recording workflows and access to
+          raw data. It is not a medical device and is not intended for diagnosis,
+          treatment, or clinical decision-making.
+        </p>
         {/* <h2>HRV Reference Material</h2>
         <p>
           If you are new to Heart Rate Variability, we recommend the following 

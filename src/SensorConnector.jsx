@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useEffectEvent, useState, useRef } from 'react';
 import "./SensorConnector.css"
 
 const SensorConnector = ({isRecording, passData}) => {
   const [isConnected, setIsConnected] = useState(false);
   const [device, setDevice] = useState(null);
   const [characteristic, setCharacteristic] = useState(null);
-  const lastRriRef = useRef(null);
+  const notificationQueueRef = useRef(Promise.resolve());
 
   const connectDevice = async () => {
     try {
@@ -30,34 +30,9 @@ const SensorConnector = ({isRecording, passData}) => {
     }
   };
 
-  useEffect(() => {
-    if (characteristic) {
-      if (isRecording) { startNotifications();}
-      else { stopNotifications();}
-    }
-  }, [isRecording, characteristic])
+  const handleHeartRateData = useEffectEvent((event) => {
+    if (!isRecording) return;
 
-  const startNotifications = async() => {
-    try {
-        await characteristic.startNotifications();
-        characteristic.addEventListener('characteristicvaluechanged', handleHeartRateData);
-        console.log('Started recording heart rate');
-    } catch (error) {
-        console.error('Error starting notifications:', error);
-    }
-  }
-
-  const stopNotifications = async () => {
-    try {
-        await characteristic.stopNotifications();
-        characteristic.removeEventListener('characteristicvaluechanged', handleHeartRateData);
-        console.log('Stopped recording heart rate');
-    } catch (error) {
-        console.error('Error stopping notifications:', error);
-    }
-  };
-
-  const handleHeartRateData = (event) => {
     const value = event.target.value;
     const flags = value.getUint8(0);
     const bpm = value.getUint8(1);
@@ -69,9 +44,6 @@ const SensorConnector = ({isRecording, passData}) => {
         const rriRaw = value.getUint16(i, true);
         const rriMs = (rriRaw / 1024) * 1000;
 
-        if (lastRriRef.current === rriMs) continue;
-        lastRriRef.current = rriMs;
-
         passData({
           bpm: bpm,
           rri: rriMs,
@@ -80,13 +52,44 @@ const SensorConnector = ({isRecording, passData}) => {
       }
     }
 
-  };
+  });
 
   useEffect(() => {
-    return () => {
-      if (characteristic) { stopNotifications(); }
+    if (!characteristic || !isRecording) return;
+
+    const char = characteristic;
+    let active = true;
+
+    const listener = (event) => {
+      if (active) {
+        handleHeartRateData(event);
+      }
     };
-  }, [characteristic]);
+
+    // Serialize Bluetooth operations across pause/resume transitions.
+    const enqueue = (operation) => {
+      notificationQueueRef.current = notificationQueueRef.current
+        .then(operation)
+        .catch((error) => {
+          console.error('Bluetooth notification error:', error);
+        });
+    };
+
+    char.addEventListener('characteristicvaluechanged', listener);
+
+    enqueue(async () => {
+      if (active) {
+        await char.startNotifications();
+      }
+    });
+
+    return () => {
+      active = false;
+      // Cleanup retains the exact listener registered by this effect.
+      char.removeEventListener('characteristicvaluechanged', listener);
+      enqueue(() => char.stopNotifications());
+    };
+  }, [characteristic, isRecording]);
 
 
   return (
